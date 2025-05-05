@@ -1,0 +1,245 @@
+QMainWindow {
+    background-color: #0d1b2a; /* Blu scuro */
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
+}
+
+QMenuBar {
+    background-color: #1b263b; /* Blu medio */
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
+    font-size: 14px;
+    border-bottom: 1px solid #415a77; /* Bordo blu chiaro */
+}
+
+QMenuBar::item {
+    background-color: #1b263b;
+    color: #f0f0f0; /* Testo off-white */
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+QMenuBar::item:selected {
+    background-color: #415a77; /* Blu chiaro */
+    color: #f0f0f0; /* Testo off-white */
+}
+
+QMenu {
+    background-color: #1b263b;
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
+    font-size: 14px;
+    border: 1px solid #415a77;
+}
+
+QMenu::item {
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+QMenu::item:selected {
+    background-color: #415a77;
+    color: #f0f0f0; /* Testo off-white */
+}
+
+QFrame {
+    border: 1px solid #415a77; /* Bordo blu chiaro */
+    background-color: #1b263b; /* Blu medio */
+}
+
+QSplitter::handle {
+    background-color: #415a77; /* Blu chiaro */
+}
+
+QPushButton {
+    background-color: #1b263b; /* Blu medio */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border-radius: 6px;
+    padding: 4px;
+    margin: 2px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QPushButton:hover {
+    background-color: #415a77; /* Blu chiaro */
+}
+
+QPushButton:pressed {
+    background-color: #0d1b2a; /* Blu scuro */
+}
+
+QToolTip {
+    background-color: #415a77; /* Blu chiaro */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #1b263b; /* Bordo blu medio */
+    border-radius: 4px;
+    padding: 4px;
+    font-family: "Poppins";
+    font-size: 12px;
+}
+
+QLabel {
+    font-family: "Poppins";
+    font-size: 14px; /* Slightly larger font size */
+    color: #f0f0f0; /* Testo off-white */
+}
+
+QDoubleSpinBox {
+    background-color: #243447; /* Slightly lighter blue for differentiation */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border-radius: 6px;
+    padding: 2px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    width: 0; /* Hide the buttons */
+    height: 0; /* Hide the buttons */
+    border: none; /* Remove any borders */
+}
+
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #0d1b2a; /* Blu scuro */
+}
+
+QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {
+    width: 8px;
+    height: 8px;
+    color: #f0f0f0; /* Ensure arrows are off-white for visibility */
+    border: none; /* Remove any border around the arrows */
+}
+
+QDoubleSpinBox::up-arrow {
+    image: none; /* Use default system arrow if no custom icon is provided */
+}
+
+QDoubleSpinBox::down-arrow {
+    image: none; /* Use default system arrow if no custom icon is provided */
+}
+
+QSlider {
+    background-color: #1b263b; /* Blu medio */
+    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border-radius: 6px;
+    height: 10px; /* Height of the slider track */
+}
+
+QSlider::groove:horizontal {
+    background-color: #415a77; /* Blu chiaro */
+    height: 6px; /* Groove height */
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    background-color: #f0f0f0; /* Off-white handle */
+    border: 1px solid #415a77; /* Bordo blu chiaro */
+    width: 14px; /* Handle width */
+    height: 14px; /* Handle height */
+    margin: -4px 0; /* Center the handle on the groove */
+    border-radius: 7px; /* Rounded handle */
+}
+
+QSlider::handle:horizontal:hover {
+    background-color: #00FFFF; /* Bright cyan on hover */
+}
+
+QSlider::sub-page:horizontal {
+    background-color: #243447; /* Slightly lighter blue for the filled part */
+    border-radius: 3px;
+}
+
+QLineEdit {
+    background-color: #243447; /* Slightly lighter blue for differentiation */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 4px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QLineEdit:focus {
+    border: 1px solid #00FFFF; /* Bright cyan border on focus */
+}
+
+QTextEdit {
+    background-color: #243447; /* Slightly lighter blue for differentiation */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 4px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QTextEdit:focus {
+    border: 1px solid #00FFFF; /* Bright cyan border on focus */
+}
+
+QMessageBox {
+    background-color: #1b263b; /* Medium blue */
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
+    font-size: 14px;
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+}
+
+QScrollBar:vertical, QScrollBar:horizontal {
+    background-color: #1b263b; /* Medium blue */
+    border: 1px solid #415a77; /* Light blue border */
+    width: 10px; /* Width for vertical, height for horizontal */
+    margin: 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: #415a77; /* Light blue */
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {
+    background-color: #00FFFF; /* Bright cyan on hover */
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    background: none; /* Remove arrows */
+    border: none;
+    width: 0;
+    height: 0;
+}
+
+QScrollArea {
+    background-color: #1b263b; /* Blu medio */
+    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border-radius: 6px;
+}
+
+QScrollArea QWidget {
+    background-color: #1b263b; /* Blu medio */
+}
+
+QScrollArea QLabel {
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
+    font-size: 14px;
+    background: transparent; /* Remove background */
+    border: none; /* Remove border */
+}
+
+QScrollArea QPushButton {
+    background-color: #415a77; /* Blu chiaro */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #243447; /* Slightly darker blue */
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QScrollArea QPushButton:hover {
+    background-color: #00FFFF; /* Bright cyan */
+}
