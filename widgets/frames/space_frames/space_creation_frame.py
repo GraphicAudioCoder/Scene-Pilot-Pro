@@ -11,7 +11,7 @@ class TargetButton(QPushButton):
     def __init__(self, parent):
         super().__init__(parent)
         self.setFixedSize(60, 60)  # Set the size of the button
-        self.color = QColor("#00CED1")  # Default color (bright cyan)
+        self.color = QColor("#4682B4")  # Default color (steel blue, less bright)
 
     def set_color(self, color):
         """Set the color of the target icon."""
@@ -30,14 +30,16 @@ class TargetButton(QPushButton):
         pen.setWidth(2)
         painter.setPen(pen)
         painter.setBrush(Qt.BrushStyle.NoBrush)
-        painter.drawEllipse(10, 10, 40, 40)  # Outer circle
+        painter.drawEllipse(12, 12, 36, 36)  # Outer circle, slightly smaller and centered
 
         # Draw the inner circle
-        painter.drawEllipse(22, 22, 16, 16)  # Inner circle
+        painter.drawEllipse(18, 18, 24, 24)  # Inner circle (larger and centered)
 
         # Draw the crosshairs
-        painter.drawLine(30, 10, 30, 50)  # Vertical line
-        painter.drawLine(10, 30, 50, 30)  # Horizontal line
+        # painter.drawLine(30, 5, 30, 55)  # Vertical line, slightly extended
+        # painter.drawLine(5, 30, 55, 30)  # Horizontal line, slightly extended
+        painter.drawLine(30, 8, 30, 52)  # Vertical line, slightly smaller but centered
+        painter.drawLine(8, 30, 52, 30)  # Horizontal line, slightly smaller but centered
 
 class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
     def __init__(self, language, tool_palette):
@@ -176,7 +178,7 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
         self.room_item = None
         self.axes_items = create_axes(self.view)  # Create axes items for the room plot
 
-        self.room_dimensions = {"width": 0, "length": 0, "height": 0}  # Store room dimensions globally
+        self.room_dimensions = {"width": 3.0, "length": 3.0, "height": 2.0}  # Store room dimensions globally
         self.room_color = {"hue": 216, "saturation": 50, "value": 100}  # Store room color globally
 
     # Calculate camera vectors (right, up).
@@ -425,13 +427,19 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
 
     def center_view(self):
         """Center the view when the center button is clicked."""
-        max_dimension = max(self.room_dimensions["width"], self.room_dimensions["length"], self.room_dimensions["height"])
-        if self.mode == "move":
-            self.view.setCameraPosition(distance=max_dimension * 2)
-            self.view.opts['center'] = QVector3D(self.room_dimensions["width"] / 2, self.room_dimensions["length"] / 2, 0)
-        elif self.mode == "orbitate":
-            self.view.setCameraPosition(distance=max_dimension * 2)
-            self.view.opts['center'] = QVector3D(self.room_dimensions["width"] / 2, self.room_dimensions["length"] / 2, self.room_dimensions["height"] / 2)
+        max_dimension = max(
+            self.room_dimensions["width"],
+            self.room_dimensions["length"],
+            self.room_dimensions["height"]
+        )
+        # Calcola il centro corretto basandoti sulle dimensioni della stanza
+        center_x = self.room_dimensions["width"] / 2
+        center_y = self.room_dimensions["length"] / 2
+        center_z = self.room_dimensions["height"] / 2
+
+        # Imposta la posizione della telecamera e il centro della vista
+        self.view.setCameraPosition(distance=max_dimension * 2)
+        self.view.opts['center'] = QVector3D(center_x, center_y, center_z)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -1,0 +1,14 @@
+{
+    "name": "Prima Sala Pitagora",
+    "description": "Sala inaugurata nel lontano 1864",
+    "coordinates": {
+        "width": 3.7,
+        "length": 3.6,
+        "height": 2.2
+    },
+    "color": {
+        "hue": 354,
+        "saturation": 50,
+        "value": 100
+    }
+}

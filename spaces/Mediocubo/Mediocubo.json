@@ -1,0 +1,14 @@
+{
+    "name": "Mediocubo",
+    "description": "Un cubo di oneste dimensioni",
+    "coordinates": {
+        "width": 5.0,
+        "length": 5.0,
+        "height": 5.0
+    },
+    "color": {
+        "hue": 150,
+        "saturation": 0,
+        "value": 100
+    }
+}

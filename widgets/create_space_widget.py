@@ -7,8 +7,10 @@ from widgets.frames.space_frames.properties_frame import PropertiesFrame
 from widgets.frames.space_frames.save_space_frame import SaveSpaceFrame
 
 class CreateSpaceWidget(QWidget):
-    def __init__(self, language):
+    def __init__(self, language, main_window):
         super().__init__()
+        self.language = language
+        self.main_window = main_window  # Reference to MainWindow
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.installEventFilter(self)  # Install event filter for key release handling
 
@@ -41,14 +43,16 @@ class CreateSpaceWidget(QWidget):
         horizontal_splitter.addWidget(vertical_splitter)
 
         # Frame delle proprietà
-        right_frame = PropertiesFrame()
-        right_frame.setMinimumWidth(0)  # Initially collapsed
-        right_frame.setMaximumWidth(200)  # Limit maximum width to 200px
+        right_frame = PropertiesFrame(central_frame, tool_palette, language, main_window)
+        right_frame.setMinimumWidth(250)  # Set a smaller minimum width
+        right_frame.setMaximumWidth(250)  # Reduce the maximum width
         horizontal_splitter.addWidget(right_frame)
-        horizontal_splitter.setSizes([200, 800, 0])  # Initially collapse the properties frame
-        horizontal_splitter.setStretchFactor(0, 1)
-        horizontal_splitter.setStretchFactor(1, 4)
-        horizontal_splitter.setStretchFactor(2, 1)
+
+        # Adjust splitter sizes to initially collapse the PropertiesFrame
+        horizontal_splitter.setSizes([200, 500, 0])  # Adjust the central frame and properties frame sizes
+        horizontal_splitter.setStretchFactor(0, 1)  # Tool palette
+        horizontal_splitter.setStretchFactor(1, 4)  # Central frame
+        horizontal_splitter.setStretchFactor(2, 0)  # Properties frame starts collapsed
 
         # Imposta il layout principale
         layout = QVBoxLayout()

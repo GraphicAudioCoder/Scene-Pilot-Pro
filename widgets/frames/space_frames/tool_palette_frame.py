@@ -143,7 +143,7 @@ class ToolPaletteFrame(QFrame):
     def enable_image_addition(self, images_folder):
         """Enable the 'Add Image' button and set the folder for saving images."""
         self.model_saved = True
-        self.images_folder = images_folder
+        self.images_folder = images_folder  # Set the images folder
         self.add_image_button.setEnabled(True)
 
     def select_cube(self):
@@ -188,12 +188,20 @@ class ToolPaletteFrame(QFrame):
 
         image_path, _ = QFileDialog.getOpenFileName(self, self.language.get("dialog_select_image"), "", "Images (*.png *.jpg *.jpeg)")
         if image_path:
-            # Save the image directly to the images folder
+            # Ensure the images folder exists
             if not os.path.exists(self.images_folder):
                 os.makedirs(self.images_folder, exist_ok=True)
 
-            image_name = f"image_{len(self.images) + 1}{os.path.splitext(image_path)[1]}"
-            saved_image_path = os.path.join(self.images_folder, image_name)
+            # Generate a unique name for the image
+            original_name = os.path.basename(image_path)
+            name, ext = os.path.splitext(original_name)
+            counter = 1
+            new_name = original_name
+            while os.path.exists(os.path.join(self.images_folder, new_name)):
+                new_name = f"{name}_{counter}{ext}"
+                counter += 1
+
+            saved_image_path = os.path.join(self.images_folder, new_name)
             shutil.copy(image_path, saved_image_path)  # Save the image without compression
             self.images.append(saved_image_path)  # Store the saved image path
             self.display_image(saved_image_path)
@@ -258,6 +266,21 @@ class ToolPaletteFrame(QFrame):
         self.images.remove(image_path)
         if os.path.exists(image_path):
             os.remove(image_path)  # Delete the saved image file
+
+    def load_images(self, images):
+        """Load saved images into the tool palette."""
+        self.images = images
+        self.clear_image_gallery()  # Clear the gallery before adding new images
+        for image_path in images:
+            self.display_image(image_path)  # Display each image in the gallery
+
+    def clear_image_gallery(self):
+        """Clear the image gallery in the tool palette."""
+        while self.image_gallery_layout.count():
+            item = self.image_gallery_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
 
 class ShapeButton(QPushButton):
     def __init__(self, parent, shape):

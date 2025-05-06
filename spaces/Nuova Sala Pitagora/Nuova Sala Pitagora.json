@@ -1,0 +1,14 @@
+{
+    "name": "Nuova Sala Pitagora",
+    "description": "Sala nuova inaugurata nel 2018. Pi\u00f9 moderna e futuristica",
+    "coordinates": {
+        "width": 40.4,
+        "length": 46.1,
+        "height": 5.4
+    },
+    "color": {
+        "hue": 180,
+        "saturation": 50,
+        "value": 100
+    }
+}

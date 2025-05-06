@@ -1,35 +1,35 @@
 QMainWindow {
-    background-color: #0d1b2a; /* Blu scuro */
+    background-color: #09141f; /* Blu scuro molto desaturato */
     color: #f0f0f0; /* Testo off-white */
     font-family: "Poppins";
 }
 
 QMenuBar {
-    background-color: #1b263b; /* Blu medio */
+    background-color: #121e2b; /* Blu medio molto desaturato */
     color: #f0f0f0; /* Testo off-white */
     font-family: "Poppins";
     font-size: 14px;
-    border-bottom: 1px solid #415a77; /* Bordo blu chiaro */
+    border-bottom: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
 }
 
 QMenuBar::item {
-    background-color: #1b263b;
+    background-color: #121e2b;
     color: #f0f0f0; /* Testo off-white */
     padding: 4px 10px;
     border-radius: 4px;
 }
 
 QMenuBar::item:selected {
-    background-color: #415a77; /* Blu chiaro */
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
     color: #f0f0f0; /* Testo off-white */
 }
 
 QMenu {
-    background-color: #1b263b;
+    background-color: #121e2b;
     color: #f0f0f0; /* Testo off-white */
     font-family: "Poppins";
     font-size: 14px;
-    border: 1px solid #415a77;
+    border: 1px solid #2a3c50;
 }
 
 QMenu::item {
@@ -38,23 +38,23 @@ QMenu::item {
 }
 
 QMenu::item:selected {
-    background-color: #415a77;
+    background-color: #2a3c50;
     color: #f0f0f0; /* Testo off-white */
 }
 
 QFrame {
-    border: 1px solid #415a77; /* Bordo blu chiaro */
-    background-color: #1b263b; /* Blu medio */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
+    background-color: #121e2b; /* Blu medio molto desaturato */
 }
 
 QSplitter::handle {
-    background-color: #415a77; /* Blu chiaro */
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
 }
 
 QPushButton {
-    background-color: #1b263b; /* Blu medio */
+    background-color: #121e2b; /* Blu medio molto desaturato */
     color: #f0f0f0; /* Testo off-white */
-    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
     border-radius: 6px;
     padding: 4px;
     margin: 2px;
@@ -63,17 +63,36 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #415a77; /* Blu chiaro */
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
 }
 
 QPushButton:pressed {
-    background-color: #0d1b2a; /* Blu scuro */
+    background-color: #08101a; /* Blu scuro molto desaturato */
+}
+
+#new_space_button {
+    background-color: #121e2b; /* Blu medio molto desaturato */
+    color: #f0f0f0; /* Testo off-white */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
+    border-radius: 6px;
+    padding: 4px;
+    margin: 2px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+#new_space_button:hover {
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
+}
+
+#new_space_button:pressed {
+    background-color: #08101a; /* Blu scuro molto desaturato */
 }
 
 QToolTip {
-    background-color: #415a77; /* Blu chiaro */
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
     color: #f0f0f0; /* Testo off-white */
-    border: 1px solid #1b263b; /* Bordo blu medio */
+    border: 1px solid #121e2b; /* Bordo blu medio molto desaturato */
     border-radius: 4px;
     padding: 4px;
     font-family: "Poppins";
@@ -87,9 +106,9 @@ QLabel {
 }
 
 QDoubleSpinBox {
-    background-color: #243447; /* Slightly lighter blue for differentiation */
+    background-color: #1a2733; /* Blu molto desaturato */
     color: #f0f0f0; /* Testo off-white */
-    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
     border-radius: 6px;
     padding: 2px;
     font-family: "Poppins";
@@ -122,21 +141,21 @@ QDoubleSpinBox::down-arrow {
 }
 
 QSlider {
-    background-color: #1b263b; /* Blu medio */
-    border: 1px solid #415a77; /* Bordo blu chiaro */
+    background-color: #121e2b; /* Blu medio molto desaturato */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
     border-radius: 6px;
     height: 10px; /* Height of the slider track */
 }
 
 QSlider::groove:horizontal {
-    background-color: #415a77; /* Blu chiaro */
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
     height: 6px; /* Groove height */
     border-radius: 3px;
 }
 
 QSlider::handle:horizontal {
     background-color: #f0f0f0; /* Off-white handle */
-    border: 1px solid #415a77; /* Bordo blu chiaro */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
     width: 14px; /* Handle width */
     height: 14px; /* Handle height */
     margin: -4px 0; /* Center the handle on the groove */
@@ -144,7 +163,7 @@ QSlider::handle:horizontal {
 }
 
 QSlider::handle:horizontal:hover {
-    background-color: #00FFFF; /* Bright cyan on hover */
+    background-color: #009999; /* Cyan molto desaturato */
 }
 
 QSlider::sub-page:horizontal {
@@ -215,13 +234,13 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
 }
 
 QScrollArea {
-    background-color: #1b263b; /* Blu medio */
-    border: 1px solid #415a77; /* Bordo blu chiaro */
+    background-color: #121e2b; /* Blu medio molto desaturato */
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
     border-radius: 6px;
 }
 
 QScrollArea QWidget {
-    background-color: #1b263b; /* Blu medio */
+    background-color: #121e2b; /* Blu medio molto desaturato */
 }
 
 QScrollArea QLabel {
@@ -233,13 +252,94 @@ QScrollArea QLabel {
 }
 
 QScrollArea QPushButton {
-    background-color: #415a77; /* Blu chiaro */
+    background-color: #2a3c50; /* Blu chiaro molto desaturato */
     color: #f0f0f0; /* Testo off-white */
-    border: 1px solid #243447; /* Slightly darker blue */
+    border: 1px solid #1a2733; /* Blu molto desaturato */
     border-radius: 4px;
     padding: 4px;
 }
 
 QScrollArea QPushButton:hover {
-    background-color: #00FFFF; /* Bright cyan */
+    background-color: #009999; /* Cyan molto desaturato */
+}
+
+QLineEdit#searchBar {
+    background-color: #243447; /* Slightly lighter blue */
+    color: #f0f0f0; /* Off-white text */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 8px;
+    font-family: "Poppins";
+    font-size: 16px;
+}
+
+QLineEdit#searchBar:focus {
+    border: 1px solid #00FFFF; /* Bright cyan border on focus */
+}
+
+QScrollArea#horizontalGallery {
+    background-color: #121e2b; /* Medium blue */
+    border: none;
+}
+
+QFrame#spaceFrame {
+    background-color: #1a2733; /* Darker blue */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 8px;
+}
+
+QLabel#spaceNameLabel {
+    font-family: "Poppins";
+    font-size: 14px;
+    color: #f0f0f0; /* Off-white text */
+    text-align: center;
+    background-color: #1a2733; /* Darker blue background */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 6px;
+}
+
+QLabel#spaceDescriptionLabel {
+    font-family: "Poppins";
+    font-size: 12px;
+    color: #f0f0f0; /* Off-white text */
+    text-align: center;
+    background-color: #1a2733; /* Darker blue background */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 6px;
+}
+
+QPushButton#viewButton, QPushButton#deleteButton {
+    background-color: #2a3c50; /* Light blue */
+    color: #f0f0f0; /* Off-white text */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 6px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QPushButton#viewButton:hover, QPushButton#deleteButton:hover {
+    background-color: #009999; /* Cyan */
+}
+
+QPushButton#imageGalleryButton {
+    background-color: #2a3c50; /* Light blue */
+    color: #f0f0f0; /* Off-white text */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+    padding: 4px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QPushButton#imageGalleryButton:hover {
+    background-color: #009999; /* Cyan */
+}
+
+QLabel#imageDisplay {
+    background-color: #1a2733; /* Darker blue */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
 }

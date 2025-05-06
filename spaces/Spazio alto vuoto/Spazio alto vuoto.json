@@ -1,0 +1,14 @@
+{
+    "name": "Spazio alto vuoto",
+    "description": "Spazio senza galleria",
+    "coordinates": {
+        "width": 6.8,
+        "length": 7.7,
+        "height": 9.7
+    },
+    "color": {
+        "hue": 360,
+        "saturation": 100,
+        "value": 46
+    }
+}

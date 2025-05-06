@@ -7,7 +7,6 @@ from config.constants import PROGRAM_NAME
 # Import widgets from their respective files
 from widgets.create_scene_widget import CreateSceneWidget
 from widgets.load_scene_widget import LoadSceneWidget
-from widgets.create_space_widget import CreateSpaceWidget
 from widgets.edit_space_widget import EditSpaceWidget
 
 class MainWindow(QMainWindow):
@@ -66,9 +65,14 @@ class MainWindow(QMainWindow):
 
     def get_or_create_widget(self, widget_class, *args):
         """Retrieve a cached widget or create a new one if not cached."""
-        if widget_class not in self.widget_cache:
-            self.widget_cache[widget_class] = widget_class(*args)
-        return self.widget_cache[widget_class]
+        widget_key = widget_class.__name__  # Use the class name as the key
+        if widget_key not in self.widget_cache:
+            # Pass the language argument if the widget is EditSpaceWidget
+            if widget_class == EditSpaceWidget:
+                self.widget_cache[widget_key] = widget_class(self.language, *args)
+            else:
+                self.widget_cache[widget_key] = widget_class(*args)
+        return self.widget_cache[widget_key]
 
     def show_create_scene_widget(self):
         """Show the CreateSceneWidget as the central widget."""
@@ -84,7 +88,8 @@ class MainWindow(QMainWindow):
 
     def show_create_space_widget(self):
         """Show the CreateSpaceWidget as the central widget."""
-        widget = self.get_or_create_widget(CreateSpaceWidget, self.language)  # Pass the language object
+        from widgets.create_space_widget import CreateSpaceWidget  # Import here to avoid circular import
+        widget = self.get_or_create_widget(CreateSpaceWidget, self.language, self)
         widget.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.set_central_widget(widget)
 

@@ -63,5 +63,6 @@ def plot_room(view, Lx, Ly, Lz, axes_items, h=0.6, s=0.5, v=1.0, set_center=True
         view.opts['center'] = pg.Vector(center[0], center[1], center[2])
 
     # Add axes
-    for axis_item in axes_items:
-        view.addItem(axis_item)
+    if axes_items:  # Check if axes_items is not None
+        for axis_item in axes_items:
+            view.addItem(axis_item)
