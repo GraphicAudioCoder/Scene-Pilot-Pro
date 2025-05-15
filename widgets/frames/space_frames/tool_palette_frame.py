@@ -24,9 +24,12 @@ class ToolPaletteFrame(QFrame):
         button_layout.setSpacing(0)
 
         self.cube_button = ShapeButton(self, "cube")
-        self.cube_button.clicked.connect(self.select_cube)  # Connect to select_cube
+        self.cube_button.setToolTip(self.language.get("tooltip_orbitate"))  # Correct tooltip key
+        self.cube_button.clicked.connect(self.select_cube)
+
         self.square_button = ShapeButton(self, "square")
-        self.square_button.clicked.connect(self.select_square)  # Connect to select_square
+        self.square_button.setToolTip(self.language.get("tooltip_floor_plan"))  # Correct tooltip key
+        self.square_button.clicked.connect(self.select_square)
 
         button_layout.addWidget(self.cube_button)
         button_layout.addWidget(self.square_button)
@@ -189,7 +192,7 @@ class ToolPaletteFrame(QFrame):
         image_path, _ = QFileDialog.getOpenFileName(self, self.language.get("dialog_select_image"), "", "Images (*.png *.jpg *.jpeg)")
         if image_path:
             # Ensure the images folder exists
-            if not os.path.exists(self.images_folder):
+            if self.images_folder is not None and not os.path.exists(self.images_folder):
                 os.makedirs(self.images_folder, exist_ok=True)
 
             # Generate a unique name for the image
@@ -197,11 +200,12 @@ class ToolPaletteFrame(QFrame):
             name, ext = os.path.splitext(original_name)
             counter = 1
             new_name = original_name
-            while os.path.exists(os.path.join(self.images_folder, new_name)):
+            images_folder_str = str(self.images_folder)
+            while os.path.exists(os.path.join(images_folder_str, new_name)):
                 new_name = f"{name}_{counter}{ext}"
                 counter += 1
 
-            saved_image_path = os.path.join(self.images_folder, new_name)
+            saved_image_path = os.path.join(str(self.images_folder), new_name)
             shutil.copy(image_path, saved_image_path)  # Save the image without compression
             self.images.append(saved_image_path)  # Store the saved image path
             self.display_image(saved_image_path)
@@ -214,9 +218,8 @@ class ToolPaletteFrame(QFrame):
 
         # Image preview
         pixmap = QPixmap(image_path).scaled(125, 125, Qt.AspectRatioMode.KeepAspectRatio)
-        image_label = QLabel()
+        image_label = ClickableImageLabel(image_path, self)
         image_label.setPixmap(pixmap)
-        image_label.mousePressEvent = lambda event: self.show_image_preview(image_path)  # Connect click to preview
         image_item_layout.addWidget(image_label)
 
         # Remove button
@@ -278,9 +281,20 @@ class ToolPaletteFrame(QFrame):
         """Clear the image gallery in the tool palette."""
         while self.image_gallery_layout.count():
             item = self.image_gallery_layout.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.deleteLater()
+            if item is not None:
+                widget = item.widget()
+                if widget:
+                    widget.deleteLater()
+
+class ClickableImageLabel(QLabel):
+    def __init__(self, image_path, parent=None):
+        super().__init__(parent)
+        self.image_path = image_path
+        self.parent_frame = parent
+
+    def mousePressEvent(self, ev):
+        if self.parent_frame is not None and hasattr(self.parent_frame, "show_image_preview"):
+            self.parent_frame.show_image_preview(self.image_path)
 
 class ShapeButton(QPushButton):
     def __init__(self, parent, shape):
@@ -288,13 +302,12 @@ class ShapeButton(QPushButton):
         self.shape = shape
         self.setFixedSize(QSize(50, 50))
         self.selected = False
-
     def setSelected(self, selected: bool):
         self.selected = selected
         self.update()
 
-    def paintEvent(self, event: QPaintEvent):
-        super().paintEvent(event)
+    def paintEvent(self, a0: QPaintEvent | None):
+        super().paintEvent(a0)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 

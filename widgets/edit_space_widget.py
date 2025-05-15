@@ -5,6 +5,7 @@ import json
 import pyqtgraph.opengl as gl
 from components.space.room_plot import plot_room
 from PyQt6.QtGui import QPixmap
+import subprocess
 
 class EditSpaceWidget(QWidget):
     def __init__(self, language, spaces_directory="spaces"):
@@ -124,6 +125,8 @@ class EditSpaceWidget(QWidget):
                 ]
                 if images:
                     image_label.setPixmap(QPixmap(images[0]).scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio))
+                    # Connect click event to open image
+                    image_label.mousePressEvent = lambda event, img_path=images[0]: self.open_image_with_viewer(img_path)
 
             # Left arrow button
             left_button = QPushButton("<")
@@ -195,9 +198,26 @@ class EditSpaceWidget(QWidget):
         if images:
             current_index[0] = (current_index[0] - 1) % len(images)
             image_label.setPixmap(QPixmap(images[current_index[0]]).scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio))
+            # Update click event to open the correct image
+            image_label.mousePressEvent = lambda event, img_path=images[current_index[0]]: self.open_image_with_viewer(img_path)
 
     def show_next_image(self, current_index, images, image_label):
         """Show the next image in the gallery."""
         if images:
             current_index[0] = (current_index[0] + 1) % len(images)
             image_label.setPixmap(QPixmap(images[current_index[0]]).scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio))
+            # Update click event to open the correct image
+            image_label.mousePressEvent = lambda event, img_path=images[current_index[0]]: self.open_image_with_viewer(img_path)
+
+    def open_image_with_viewer(self, image_path):
+        """Open the image with the system's default image viewer."""
+        try:
+            subprocess.run(["open", image_path], check=True)  # macOS
+        except Exception:
+            try:
+                subprocess.run(["xdg-open", image_path], check=True)  # Linux
+            except Exception:
+                try:
+                    os.startfile(image_path)  # Windows
+                except Exception as e:
+                    QMessageBox.critical(self, "Error", f"Could not open image: {e}")

@@ -1,0 +1,14 @@
+{
+    "name": "Sala Pitagora",
+    "description": "Importante sala del 1876",
+    "coordinates": {
+        "width": 4.0,
+        "length": 3.8,
+        "height": 2.5
+    },
+    "color": {
+        "hue": 322,
+        "saturation": 85,
+        "value": 100
+    }
+}

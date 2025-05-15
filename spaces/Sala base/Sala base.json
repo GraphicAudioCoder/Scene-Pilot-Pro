@@ -1,0 +1,14 @@
+{
+    "name": "Sala base",
+    "description": "Cubetto",
+    "coordinates": {
+        "width": 3.0,
+        "length": 3.0,
+        "height": 3.0
+    },
+    "color": {
+        "hue": 216,
+        "saturation": 50,
+        "value": 100
+    }
+}

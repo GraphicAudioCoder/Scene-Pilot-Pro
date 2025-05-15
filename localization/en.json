@@ -18,7 +18,7 @@
     "label_name": "Name:",
     "label_description": "Description:",
     "label_image_gallery": "Image Gallery",
-    "label_gallery": "Saved Spaces Gallery",
+    "label_gallery": "Refresh Gallery",
     "button_save": "Save",
     "button_add_image": "Add Image",
     "button_new_space": "New Space",

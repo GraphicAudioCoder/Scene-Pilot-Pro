@@ -17,11 +17,9 @@ if __name__ == "__main__":
     QFontDatabase.addApplicationFont(os.path.join(base_path, "assets/fonts/Poppins/Poppins-Regular.ttf"))
     QFontDatabase.addApplicationFont(os.path.join(base_path, "assets/fonts/Poppins/Poppins-Bold.ttf"))
     QFontDatabase.addApplicationFont(os.path.join(base_path, "assets/fonts/Poppins/Poppins-Italic.ttf"))
-
-    # Set the global application font to Poppins
     app.setFont(QFont("Poppins"))
 
-    # Apply the dark theme stylesheet globally
+    # Apply the theme stylesheet globally
     stylesheet_path = os.path.join(base_path, "styles/blue_theme.qss")
     with open(stylesheet_path, "r") as file:
         app.setStyleSheet(file.read())

@@ -35,7 +35,7 @@ class CreateSpaceWidget(QWidget):
         save_space_frame.setMinimumHeight(0)  # Initially collapsed
         save_space_frame.setMaximumHeight(200)  # Limit maximum height to 200px
         vertical_splitter.addWidget(save_space_frame)
-        vertical_splitter.setSizes([800, 0])  # Initially collapsed
+        vertical_splitter.setSizes([600, 200])  # Make the save space frame visible by default
         vertical_splitter.setStretchFactor(0, 4)
         vertical_splitter.setStretchFactor(1, 1)
 
