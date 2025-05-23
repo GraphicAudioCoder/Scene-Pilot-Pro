@@ -264,11 +264,18 @@ class ToolPaletteFrame(QFrame):
 
     def remove_image(self, image_item_widget, image_path):
         """Remove an image from the gallery and delete it from the saved folder."""
-        self.image_gallery_layout.removeWidget(image_item_widget)
-        image_item_widget.deleteLater()
-        self.images.remove(image_path)
-        if os.path.exists(image_path):
-            os.remove(image_path)  # Delete the saved image file
+        reply = QMessageBox.question(
+            self,
+            self.language.get("dialog_delete_image_title"),
+            self.language.get("dialog_delete_image_message"),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.image_gallery_layout.removeWidget(image_item_widget)
+            image_item_widget.deleteLater()
+            self.images.remove(image_path)
+            if os.path.exists(image_path):
+                os.remove(image_path)  # Delete the saved image file
 
     def load_images(self, images):
         """Load saved images into the tool palette."""
@@ -291,6 +298,7 @@ class ClickableImageLabel(QLabel):
         super().__init__(parent)
         self.image_path = image_path
         self.parent_frame = parent
+        self.setToolTip(self.parent_frame.language.get("tooltip_open_image"))  # Add tooltip
 
     def mousePressEvent(self, ev):
         if self.parent_frame is not None and hasattr(self.parent_frame, "show_image_preview"):

@@ -35,10 +35,11 @@
     "button_add_image": "Aggiungi Immagine",
     "dialog_select_image": "Seleziona un'immagine",
     "dialog_image_preview": "Anteprima Immagine",
-    "tooltip_center_view": "Centra Vista (Double Click)",
+    "tooltip_center_view": "Centra Vista (Doppio Click)",
     "label_gallery": "Ricarica Galleria",
     "tooltip_open_model": "Apri questo modello",
     "tooltip_refresh_gallery": "Aggiorna la galleria",
+    "tooltip_open_image": "Premi per aprire l'immagine",
     "confirm_open_title": "Conferma Apertura",
     "confirm_open_message": "Sei sicuro di voler aprire il modello '{name}'? Le modifiche non salvate andranno perse.",
     "confirm_new_space_title": "Conferma Nuovo Spazio",
@@ -50,5 +51,12 @@
     "dialog_view_message": "Visualizzazione dello spazio: {name}",
     "dialog_delete_title": "Elimina Spazio",
     "dialog_delete_message": "Sei sicuro di voler eliminare lo spazio '{name}'?",
-    "dialog_open_title": "Apri Spazio"
+    "dialog_open_title": "Apri Spazio",
+    "menu_language": "Lingua",
+    "confirm_title": "Conferma Cambio Lingua",
+    "confirm_language_switch_message": "Sei sicuro di voler cambiare lingua? L'applicazione verrà riavviata e ogni modifica non salvata andrà persa.",
+    "info_title": "Informazione",
+    "info_already_current_language": "La lingua selezionata ({language}) è già quella corrente.",
+    "dialog_delete_image_title": "Elimina Immagine",
+    "dialog_delete_image_message": "Sei sicuro di voler eliminare l'immagine?"
 }

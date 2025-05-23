@@ -1,4 +1,6 @@
-from PyQt6.QtWidgets import QMainWindow, QMenuBar, QWidget, QVBoxLayout
+import os  # Add this import
+import sys  # Add this import
+from PyQt6.QtWidgets import QMainWindow, QMenuBar, QWidget, QVBoxLayout, QMessageBox
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt
 from localization.language import Language
@@ -34,12 +36,23 @@ class MainWindow(QMainWindow):
         space_menu.addAction(create_space_action)
         space_menu.addAction(edit_space_action)
         
+        # Add Language menu
+        language_menu = menu_bar.addMenu(self.language.get("menu_language"))
+        english_action = QAction("English", self)
+        italian_action = QAction("Italiano", self)
+        language_menu.addAction(english_action)
+        language_menu.addAction(italian_action)
+
         # Connect actions to methods
         create_scene_action.triggered.connect(self.show_create_scene_widget)
         load_scene_action.triggered.connect(self.show_load_scene_widget)
         create_space_action.triggered.connect(self.show_create_space_widget)
         edit_space_action.triggered.connect(self.show_edit_space_widget)
         
+        # Connect language actions to methods
+        english_action.triggered.connect(lambda: self.confirm_language_switch("en", "English"))
+        italian_action.triggered.connect(lambda: self.confirm_language_switch("it", "Italiano"))
+
         # Set an initial central widget
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -98,3 +111,63 @@ class MainWindow(QMainWindow):
         widget = self.get_or_create_widget(EditSpaceWidget)
         widget.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.set_central_widget(widget)
+
+    def confirm_language_switch(self, language_code, language_name):
+        """Show a confirmation dialog for switching languages."""
+        if self.language.get_current_language() == language_code:  # Use get_current_language method
+            QMessageBox.information(
+                self,
+                self.language.get("info_title"),
+                self.language.get("info_already_current_language").format(language=language_name),
+            )
+            return
+
+        # Get the confirmation message in both the current and target languages
+        current_language_message = self.language.get("confirm_language_switch_message")
+        target_language_translations = self.language.load_translations(language_code)
+        target_language_message = target_language_translations.get("confirm_language_switch_message")
+
+        message = (
+            f"{current_language_message}\n\n"
+            f"{target_language_message}"
+        )
+        reply = QMessageBox.question(
+            self,
+            self.language.get("confirm_title"),
+            message,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.switch_language(language_code)
+
+    def switch_language(self, language_code):
+        """Switch the application language."""
+        self.language.set_language(language_code)
+        self.write_language_to_file(language_code)  # Save the language to the file
+        self.restart_application(language_code)
+
+    def write_language_to_file(self, language_code):
+        """Write the selected language to the file."""
+        language_file = os.path.join(os.path.dirname(__file__), "../config/language.txt")
+        with open(language_file, "w", encoding="utf-8") as file:
+            file.write(language_code)
+
+    def restart_application(self, language_code):
+        """Restart the application with the updated language."""
+        from PyQt6.QtWidgets import QApplication
+
+        # Ensure the environment variable is set during the restart
+        os.environ["OBJC_DISABLE_INITIALIZE_FORK_SAFETY"] = "YES"
+
+        os.execl(
+            sys.executable,
+            sys.executable,
+            *sys.argv,
+            f"--language={language_code}"  # Pass the selected language as an argument
+        )
+        QApplication.quit()
+
+    def retranslate_ui(self):
+        """Retranslate the UI elements to the current language."""
+        self.menuBar().clear()
+        self.__init__(self.language)  # Reinitialize the menu bar with the new language

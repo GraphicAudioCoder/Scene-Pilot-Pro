@@ -50,5 +50,13 @@
     "dialog_delete_title": "Delete Space",
     "dialog_delete_message": "Are you sure you want to delete the space '{name}'?",
     "label_no_description": "No description available.",
-    "dialog_open_title": "Open Space"
+    "dialog_open_title": "Open Space",
+    "menu_language": "Language",
+    "confirm_title": "Confirm Language Switch",
+    "confirm_language_switch_message": "Are you sure you want to switch languages? The application will restart, and any unsaved changes will be lost.",
+    "info_title": "Information",
+    "info_already_current_language": "The selected language ({language}) is already the current language.",
+    "tooltip_open_image": "Click to open the image",
+    "dialog_delete_image_title": "Delete Image",
+    "dialog_delete_image_message": "Are you sure you want to delete the image?"
 }

@@ -113,6 +113,7 @@ class EditSpaceWidget(QWidget):
             image_label.setFixedSize(200, 200)
             image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             image_label.setObjectName("imageDisplay")
+            image_label.setToolTip(self.language.get("tooltip_open_image"))  # Add tooltip
             image_gallery_layout.addWidget(image_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
             # Load images
