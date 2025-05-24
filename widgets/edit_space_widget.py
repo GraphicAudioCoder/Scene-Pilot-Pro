@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt
 import os
 import json
 import pyqtgraph.opengl as gl
-from components.space.room_plot import plot_room
+from components.space.room_plot import plot_room, create_door
 from PyQt6.QtGui import QPixmap
 import subprocess
 
@@ -11,7 +11,7 @@ class EditSpaceWidget(QWidget):
     def __init__(self, language, spaces_directory="spaces"):
         super().__init__()
         self.language = language  # Store the language object
-        self.spaces_directory = spaces_directory
+        self.spaces_directory = str(spaces_directory)  # Ensure spaces_directory is a string
 
         # Main layout
         layout = QVBoxLayout(self)
@@ -50,6 +50,10 @@ class EditSpaceWidget(QWidget):
                         space_data = json.load(file)
                         self.spaces.append(space_data)
         self.display_spaces(self.spaces)
+
+    def load_saved_spaces(self):
+        """Alias for load_spaces to maintain consistency with other components."""
+        self.load_spaces()
 
     def filter_spaces(self, text):
         """Filter spaces based on the search text."""
@@ -98,6 +102,19 @@ class EditSpaceWidget(QWidget):
                 s=color.get("saturation", 0) / 100.0,
                 v=color.get("value", 0) / 100.0
             )
+
+            # Plot the door in the OpenGL view if door data is present
+            door_data = space.get("door", None)
+            if door_data:
+                create_door(
+                    gl_view,
+                    door_data.get("width", 0),
+                    door_data.get("height", 0),
+                    door_data.get("offset", 0),
+                    door_data.get("wall_index", 0),
+                    dimensions,
+                    color
+                )
 
             # Image gallery below OpenGL
             images_folder = os.path.join("spaces", space["name"], "images")

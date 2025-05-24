@@ -20,6 +20,10 @@ class CreateSpaceWidget(QWidget):
 
         # Tool palette a sinistra
         tool_palette = ToolPaletteFrame(language)  # Create ToolPaletteFrame instance
+
+        # Imposta il parent_frame per ToolPaletteFrame
+        tool_palette.parent_frame = None  # Inizialmente None, sarà impostato più avanti
+
         horizontal_splitter.addWidget(tool_palette)
 
         # Creazione dello splitter verticale per SpaceCreationFrame e SaveSpaceFrame
@@ -28,6 +32,10 @@ class CreateSpaceWidget(QWidget):
 
         # Frame centrale
         central_frame = SpaceCreationFrame(language, tool_palette)  # Pass tool_palette
+
+        # Collega il parent_frame di ToolPaletteFrame a SpaceCreationFrame
+        tool_palette.parent_frame = central_frame
+
         vertical_splitter.addWidget(central_frame)
 
         # Frame per il salvataggio dello spazio

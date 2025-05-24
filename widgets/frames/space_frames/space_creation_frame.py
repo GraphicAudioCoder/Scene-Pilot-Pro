@@ -1,9 +1,9 @@
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QPushButton, QHBoxLayout, QWidget
+from PyQt6.QtWidgets import QFrame, QVBoxLayout, QPushButton, QHBoxLayout, QWidget, QMessageBox
 from PyQt6.QtCore import Qt, QEvent, QTimer
 from PyQt6.QtGui import QMouseEvent, QVector3D, QPaintEvent, QPainter, QColor  # Import for custom drawing
 import pyqtgraph.opengl as gl
 from components.space.gizmo import create_axes 
-from components.space.room_plot import plot_room
+from components.space.room_plot import plot_room, create_translucent_wall, create_door
 import numpy as np
 
 class TargetButton(QPushButton):
@@ -140,23 +140,6 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
         self.overlay_widget.raise_()
 
 
-        """
-        # Overlay container for buttons
-        self.overlay_widget = QWidget(self)
-        self.overlay_widget.setGeometry(10, 10, 50, 100)  # Position with margin (10px from top and left)
-
-        # Layout for + and - buttons
-        overlay_layout = QVBoxLayout(self.overlay_widget)
-        overlay_layout.setContentsMargins(0, 0, 0, 0)
-        overlay_layout.setSpacing(5)  # Spacing between buttons
-
-        # Add + button
-        self.plus_button = QPushButton("+", self.overlay_widget)
-        self.plus_button.setFixedSize(40, 40)  # Set button size
-        overlay_layout.addWidget(self.plus_button)
-
-        """
-
         # New container in bottom-left for the empty button
         self.bottom_left_widget = QWidget(self)
 
@@ -180,6 +163,16 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
 
         self.room_dimensions = {"width": 3.0, "length": 3.0, "height": 2.0}  # Store room dimensions globally
         self.room_color = {"hue": 216, "saturation": 50, "value": 100}  # Store room color globally
+
+        # Wall selection state
+        self.current_wall_index = 0
+        self.translucent_wall = None
+
+        # Stato per la gestione della superficie traslucida
+        self.translucent_wall_active = False
+
+        # Stato per la gestione della superficie della porta
+        self.door_surface = None
 
     # Calculate camera vectors (right, up).
     def get_camera_vectors(self):
@@ -381,8 +374,8 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
         self.zoom_direction = "out"
         self.perform_zoom()
 
-    def update_room_plot(self, width, length, height, hue, saturation, value):
-        """Update the room plot with the given dimensions and HSV color."""
+    def update_room_plot(self, width, length, height, hue, saturation, value, door_data=None, render_door=False):
+        """Update the room plot with the given dimensions, HSV color, and door data."""
         # Save dimensions and color globally
         self.room_dimensions = {"width": width, "length": length, "height": height}
         self.room_color = {"hue": hue, "saturation": saturation, "value": value}
@@ -390,12 +383,25 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
         h = hue / 360.0  # Normalize hue to [0, 1]
         s = saturation / 100.0  # Normalize saturation to [0, 1]
         v = value / 100.0  # Normalize value to [0, 1]
-        if self.room_item:
-            self.view.removeItem(self.room_item)  # Remove the existing room plot
+        if render_door:
+            self.door_mesh_width = door_data["width"]
+            self.door_mesh_height = door_data["height"]
+            self.door_mesh_offset = door_data["offset"]
+            self.door_mesh_wall_index = door_data["wall_index"]
+            new_door = self.create_door_surface(
+                self.door_mesh_width, 
+                self.door_mesh_height,
+                self.door_mesh_offset
+            )
+            self.view.door_mesh = new_door
+        else:
+            self.view.door_mesh = None
+        # print(door)
         plot_room(self.view, width, length, height, self.axes_items, h=h, s=s, v=v)
 
-    def update_room_color(self, width, length, height, hue, saturation, value):
-        """Update the room plot color with the given HSV values."""
+
+    def update_room_color(self, width, length, height, hue, saturation, value, door_data=None):
+        """Update the room plot color with the given HSV values and door data."""
         # Save color globally
         self.room_color = {"hue": hue, "saturation": saturation, "value": value}
         self.update_target_button_color()  # Update the target button color
@@ -408,14 +414,26 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
             current_center = self.view.opts['center']
             if self.room_item:
                 self.view.removeItem(self.room_item)  # Remove the existing room plot
-            plot_room(self.view, width, length, height, self.axes_items, h=h, s=s, v=v, set_center=False)
+            plot_room(self.view, width, length, height, self.axes_items, h=h, s=s, v=v, set_center=False, door=False)
             # Restore the camera center
             self.view.opts['center'] = current_center
         else:
             # Default behavior for orbitate mode
             if self.room_item:
                 self.view.removeItem(self.room_item)  # Remove the existing room plot
-            plot_room(self.view, width, length, height, self.axes_items, h=h, s=s, v=v)
+            plot_room(self.view, width, length, height, self.axes_items, h=h, s=s, v=v, door=False)
+
+        # # Render the door if door data is provided
+        # if door_data:
+        #     create_door(
+        #         self.view,
+        #         door_data["width"],
+        #         door_data["height"],
+        #         door_data["offset"],
+        #         door_data["wall_index"],
+        #         self.room_dimensions,
+        #         self.room_color
+        #     )
 
     def update_target_button_color(self):
         """Update the color of the target button based on the current room color."""
@@ -448,3 +466,127 @@ class SpaceCreationFrame(QFrame):  # Renamed from CentralFrame
         margin = 10
         w = self.bottom_left_widget
         w.move(margin, self.height() - w.height() - margin)
+
+    def toggle_wall_selection(self):
+        """Toggle the visibility of the translucent wall selection."""
+        if self.translucent_wall:
+            self.view.removeItem(self.translucent_wall)
+            self.translucent_wall = None
+        else:
+            self.update_translucent_wall()
+
+    def update_translucent_wall(self):
+        """Update the translucent wall overlay based on the current wall index."""
+        if self.translucent_wall:
+            self.view.removeItem(self.translucent_wall)
+
+        room_dims = self.room_dimensions
+        room_color = self.room_color
+        self.translucent_wall = create_translucent_wall(
+            self.view,
+            self.current_wall_index,
+            room_dims["width"],
+            room_dims["length"],
+            room_dims["height"],
+            h=room_color["hue"] / 360,
+            s=room_color["saturation"] / 100,
+            v=room_color["value"] / 100,
+            alpha=0.3
+        )
+
+    def select_next_wall(self):
+        """Select the next wall in clockwise order."""
+        self.current_wall_index = (self.current_wall_index + 1) % 4
+        # print(f"Wall index updated to: {self.current_wall_index}")
+        self.update_translucent_wall()
+
+    def select_previous_wall(self):
+        """Select the previous wall in counterclockwise order."""
+        self.current_wall_index = (self.current_wall_index - 1) % 4
+        # print(f"Wall index updated to: {self.current_wall_index}")
+        self.update_translucent_wall()
+
+    def hideEvent(self, event):
+        """Remove the translucent wall when the frame is hidden."""
+        if self.translucent_wall:
+            self.view.removeItem(self.translucent_wall)
+            self.translucent_wall = None
+        super().hideEvent(event)
+
+    def create_initial_translucent_wall(self):
+        """Crea la superficie iniziale sopra la prima parete."""
+        if not self.translucent_wall_active:
+            self.current_wall_index = 0  # Imposta la prima parete
+            self.update_translucent_wall()
+            self.translucent_wall_active = True
+
+    def remove_translucent_wall(self):
+        """Rimuove la superficie traslucida."""
+        if self.translucent_wall_active:
+            if self.translucent_wall:
+                self.view.removeItem(self.translucent_wall)
+                self.translucent_wall = None
+            self.translucent_wall_active = False
+
+    def create_door_surface(self, width, height, offset):
+        """Create a translucent surface to represent the door."""
+        # Remove the existing door, if present
+        if self.door_surface:
+            if self.door_surface in self.view.items:
+                self.view.removeItem(self.door_surface)
+            self.door_surface = None
+
+        # Use the centralized function to create the door
+        self.door_surface = create_door(
+            self.view,
+            width,
+            height,
+            offset,
+            self.current_wall_index,
+            self.room_dimensions,
+            self.room_color
+        )
+        return self.door_surface
+
+    def warn_and_remove_door(self):
+        """Mostra un avviso e rimuove la porta se presente."""
+        if self.door_surface:
+            reply = QMessageBox.warning(
+                self,
+                self.language.get("warning_title"),
+                self.language.get("warning_door_removed"),
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
+            )
+            if reply == QMessageBox.StandardButton.Ok:
+                self.remove_door_surface()
+                return True
+            return False
+        return True
+
+    def get_current_wall_length(self):
+        """Restituisce la lunghezza della parete attualmente selezionata."""
+        if self.current_wall_index in [0, 2]:  # Pareti 0 e 2 si sviluppano lungo la larghezza
+            return self.room_dimensions["width"]
+        elif self.current_wall_index in [1, 3]:  # Pareti 1 e 3 si sviluppano lungo la lunghezza
+            return self.room_dimensions["length"]
+        return 0.0
+
+    def remove_door_surface(self):
+        """Rimuove la superficie della porta, se presente."""
+        if self.door_surface:
+            try:
+                self.view.removeItem(self.door_surface)
+            except ValueError:
+                pass  # Silently handle the case where the door_surface is not in view items
+            self.door_surface = None
+
+    def get_door_data(self):
+        """Retrieve the current door data if a door is present."""
+        if self.door_surface:
+            return {
+                "width": self.door_surface.width,
+                "height": self.door_surface.height,
+                "offset": self.door_surface.offset,
+                "wall_index": self.door_surface.wall_index
+            }
+        return None

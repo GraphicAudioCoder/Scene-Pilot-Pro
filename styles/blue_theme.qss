@@ -343,3 +343,24 @@ QLabel#imageDisplay {
     border: 1px solid #415a77; /* Light blue border */
     border-radius: 6px;
 }
+
+#menuWidget {
+    background-color: #121e2b; 
+    border: 1px solid #2a3c50; 
+    border-radius: 6px;
+}
+
+QPushButton#leftArrowButton, QPushButton#rightArrowButton {
+    background-color: #2a3c50; /* Light blue */
+    color: #f0f0f0; /* Off-white text */
+    border: 1px solid #415a77; /* Light blue border */
+    border-radius: 6px;
+}
+
+QPushButton#leftArrowButton:hover, QPushButton#rightArrowButton:hover {
+    background-color: #009999; /* Cyan on hover */
+}
+
+QPushButton#leftArrowButton:pressed, QPushButton#rightArrowButton:pressed {
+    background-color: #006666; /* Darker cyan on press */
+}

@@ -1,17 +1,26 @@
 QSplashScreen {
-    background-color: #121212;
-    color: #ffffff;
+    background-color: #121e2b; /* Blu medio molto desaturato */
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
+    border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
+    border-radius: 6px;
 }
 
 QLabel#appNameLabel {
     font-size: 24px;
     font-weight: bold;
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
 }
 
 QLabel#companyLabel {
     font-size: 16px;
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
 }
 
 QLabel#authorLabel {
     font-size: 14px;
+    color: #f0f0f0; /* Testo off-white */
+    font-family: "Poppins";
 }

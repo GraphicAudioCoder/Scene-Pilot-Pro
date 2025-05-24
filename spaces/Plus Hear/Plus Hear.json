@@ -2,7 +2,7 @@
     "name": "Plus Hear",
     "description": "Laboratorio situato al Lingotto: \"Dental School\" di Torino",
     "coordinates": {
-        "width": 5.38,
+        "width": 5.39,
         "length": 5.25,
         "height": 3.74
     },
@@ -10,5 +10,11 @@
         "hue": 190,
         "saturation": 59,
         "value": 100
+    },
+    "door": {
+        "width": 1.54,
+        "height": 2.0,
+        "offset": 1.92,
+        "wall_index": 0
     }
 }

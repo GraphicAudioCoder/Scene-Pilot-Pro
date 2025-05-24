@@ -10,5 +10,11 @@
         "hue": 322,
         "saturation": 85,
         "value": 100
+    },
+    "door": {
+        "width": 1.0,
+        "height": 2.0,
+        "offset": 1.5,
+        "wall_index": 0
     }
 }

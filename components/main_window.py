@@ -32,9 +32,9 @@ class MainWindow(QMainWindow):
         # Add 3D Space menu
         space_menu = menu_bar.addMenu(self.language.get("menu_3d_space"))
         create_space_action = QAction(self.language.get("action_create_space"), self)
-        edit_space_action = QAction(self.language.get("action_edit_space"), self)
+        # edit_space_action = QAction(self.language.get("action_edit_space"), self)
         space_menu.addAction(create_space_action)
-        space_menu.addAction(edit_space_action)
+        # space_menu.addAction(edit_space_action)
         
         # Add Language menu
         language_menu = menu_bar.addMenu(self.language.get("menu_language"))
@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
         create_scene_action.triggered.connect(self.show_create_scene_widget)
         load_scene_action.triggered.connect(self.show_load_scene_widget)
         create_space_action.triggered.connect(self.show_create_space_widget)
-        edit_space_action.triggered.connect(self.show_edit_space_widget)
+        # edit_space_action.triggered.connect(self.show_edit_space_widget)
         
         # Connect language actions to methods
         english_action.triggered.connect(lambda: self.confirm_language_switch("en", "English"))
@@ -107,10 +107,10 @@ class MainWindow(QMainWindow):
         self.set_central_widget(widget)
 
     def show_edit_space_widget(self):
-        """Show the EditSpaceWidget as the central widget."""
-        widget = self.get_or_create_widget(EditSpaceWidget)
-        widget.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        """Show the EditSpaceWidget as the central widget and reload the gallery."""
+        widget = self.get_or_create_widget(EditSpaceWidget, self.language)
         self.set_central_widget(widget)
+        widget.load_saved_spaces()  # Reload the gallery whenever this action is triggered
 
     def confirm_language_switch(self, language_code, language_name):
         """Show a confirmation dialog for switching languages."""

@@ -31,6 +31,7 @@
     "error_image_not_found": "The image '{image}' could not be found. It will be skipped.",
     "error_saving_file": "An error occurred while saving the file: {error}",
     "error_opening_image": "An error occurred while opening the image: {error}",
+    "error_door_exceeds_wall": "Cannot create door: it exceeds the wall dimensions.",
     "success_title": "Success",
     "success_message": "Model saved successfully.",
     "overwrite_title": "Confirm Overwrite",
@@ -58,5 +59,13 @@
     "info_already_current_language": "The selected language ({language}) is already the current language.",
     "tooltip_open_image": "Click to open the image",
     "dialog_delete_image_title": "Delete Image",
-    "dialog_delete_image_message": "Are you sure you want to delete the image?"
+    "dialog_delete_image_message": "Are you sure you want to delete the image?",
+    "tooltip_insert_main_entrance": "Insert main entrance",
+    "tooltip_confirm_selection": "Create door",
+    "label_door_height": "Door Height:",
+    "label_door_width": "Door Width:",
+    "label_door_offset": "Door Offset (from left):",
+    "confirm_new_door_title": "Confirm New Door",
+    "confirm_new_door_message": "Are you sure you want to create a new door? This will remove any previously inserted main entrance.",
+    "warning_door_removed": "The main entrance has been removed."
 }

@@ -58,5 +58,14 @@
     "info_title": "Informazione",
     "info_already_current_language": "La lingua selezionata ({language}) è già quella corrente.",
     "dialog_delete_image_title": "Elimina Immagine",
-    "dialog_delete_image_message": "Sei sicuro di voler eliminare l'immagine?"
+    "dialog_delete_image_message": "Sei sicuro di voler eliminare l'immagine?",
+    "tooltip_insert_main_entrance": "Inserisci ingresso principale",
+    "tooltip_confirm_selection": "Crea porta",
+    "label_door_height": "Altezza Porta:",
+    "label_door_width": "Larghezza Porta:",
+    "label_door_offset": "Offset Porta (da sinistra):",
+    "error_door_exceeds_wall": "Impossibile creare la porta: supera le dimensioni della parete.",
+    "confirm_new_door_title": "Conferma Nuova Porta",
+    "confirm_new_door_message": "Sei sicuro di voler creare una nuova porta? Questa rimuoverà qualsiasi ingresso principale precedentemente inserito.",
+    "warning_door_removed": "L'ingresso principale è stato rimosso."
 }

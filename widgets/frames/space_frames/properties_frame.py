@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QFrame, QVBoxLayout, QPushButton, QSpacerItem, QSize
 from PyQt6.QtGui import QColor
 from PyQt6.QtCore import Qt
 import pyqtgraph.opengl as gl
-from components.space.room_plot import plot_room  # Import the function to plot the room
+from components.space.room_plot import plot_room, create_door  # Import the function to plot the room
 
 class PropertiesFrame(QFrame):
     def __init__(self, space_creation_frame, tool_palette, language, main_window):
@@ -140,6 +140,26 @@ class PropertiesFrame(QFrame):
             v=color.get("value", 0) / 100.0
         )
 
+        # Plot the door in the OpenGL view if door data is present
+        door_data = space_data.get("door", None)
+        if door_data:
+            create_door(
+                gl_view,
+                door_data.get("width", 0),
+                door_data.get("height", 0),
+                door_data.get("offset", 0),
+                door_data.get("wall_index", 0),
+                dimensions,
+                color
+            )
+
+        # Add the delete button below the OpenGL view
+        delete_button = QPushButton(self.language.get("button_delete"))
+        delete_button.setObjectName("delete_space_button")
+        delete_button.setToolTip(self.language.get("dialog_delete_message"))
+        delete_button.clicked.connect(lambda: self.confirm_and_delete_space(space_data))
+        space_layout.addWidget(delete_button)
+
         # Add the space widget to the gallery
         self.scroll_area_layout.addWidget(space_widget)
 
@@ -192,6 +212,40 @@ class PropertiesFrame(QFrame):
         save_space_frame.file_path = os.path.join("spaces", space_data.get("name", ""), f"{space_data.get('name', '')}.json")  # Set file path
         save_space_frame.images_folder = images_folder  # Set images folder
         save_space_frame.model_saved = True  # Mark the model as saved
+
+        # Load door data if present
+        door_data = space_data.get("door", None)
+        print(f"Loading door data: {door_data}")
+        if door_data:
+            self.space_creation_frame.update_room_plot(
+                dimensions.get("width", 0),
+                dimensions.get("length", 0),
+                dimensions.get("height", 0),
+                color.get("hue", 0),
+                color.get("saturation", 0),
+                color.get("value", 0),
+                door_data=door_data,
+                render_door=True
+            )
+
+    def confirm_and_delete_space(self, space_data):
+        """Show a confirmation dialog before deleting the space."""
+        reply = QMessageBox.question(
+            self,
+            self.language.get("dialog_delete_title"),
+            self.language.get("dialog_delete_message").format(name=space_data.get("name", "Unnamed Space")),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            # Delete the space directory
+            space_name = space_data.get("name", "")
+            space_dir = os.path.join("spaces", space_name)
+            if os.path.exists(space_dir):
+                import shutil
+                shutil.rmtree(space_dir)
+
+            # Reload the gallery
+            self.load_saved_spaces()
 
     def filter_spaces(self, text):
         """Filter spaces based on the search text."""

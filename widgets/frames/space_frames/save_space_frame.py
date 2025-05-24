@@ -62,6 +62,20 @@ class SaveSpaceFrame(QFrame):
             "color": color  # Use rounded color values
         }
 
+        # Retrieve door data if present
+        door_data = None
+        if self.space_creation_frame.view.door_mesh:
+            door_data = {
+                "width": round(self.space_creation_frame.view.door_mesh.width, 2),
+                "height": round(self.space_creation_frame.view.door_mesh.height, 2),
+                "offset": round(self.space_creation_frame.view.door_mesh.offset, 2),
+                "wall_index": self.space_creation_frame.view.door_mesh.wall_index
+            }
+
+        # Add door data to model_data if present
+        if door_data:
+            model_data["door"] = door_data
+
         # Create a subfolder for the space
         space_folder = os.path.join("spaces", name)
         images_folder = os.path.join(space_folder, "images")
@@ -101,5 +115,9 @@ class SaveSpaceFrame(QFrame):
         # Do not modify the images folder if the tool palette contains images
         if not self.space_creation_frame.tool_palette.images:
             os.makedirs(images_folder, exist_ok=True)
+
+        # Notify the PropertiesFrame to reload the gallery
+        if hasattr(self.space_creation_frame, 'properties_frame'):
+            self.space_creation_frame.properties_frame.load_saved_spaces()
 
         QMessageBox.information(self, self.language.get("success_title"), self.language.get("success_message"))

@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QFrame, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QDoubleSpinBox, QSlider, QListWidget, QListWidgetItem, QFileDialog, QLabel, QScrollArea, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDialog, QMessageBox
-from PyQt6.QtGui import QPainter, QPaintEvent, QColor, QFont, QPixmap, QIcon, QGuiApplication
-from PyQt6.QtCore import QSize, pyqtSignal, Qt
+from PyQt6.QtGui import QPainter, QPaintEvent, QColor, QFont, QPixmap, QIcon, QGuiApplication, QBrush, QPolygon
+from PyQt6.QtCore import QSize, pyqtSignal, Qt, QPoint, QRect
 import os
 import shutil
 import subprocess  # Import subprocess for opening files
@@ -14,6 +14,9 @@ class ToolPaletteFrame(QFrame):
         self.setFrameShape(QFrame.Shape.StyledPanel)
         self.setMinimumWidth(0)
         self.setMaximumWidth(200)
+
+        # Initialize the toggle menu
+        self.menu_widget = None
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -64,7 +67,7 @@ class ToolPaletteFrame(QFrame):
         self.width_spinbox.setSuffix(" m")
         self.width_spinbox.setValue(3.0)
 
-        dimension_layout = QVBoxLayout()
+        dimension_layout = QVBoxLayout()  # Define dimension_layout before usage
         dimension_layout.addWidget(self.width_label)
         dimension_layout.addWidget(self.width_spinbox)
         dimension_layout.addWidget(self.length_label)
@@ -72,7 +75,20 @@ class ToolPaletteFrame(QFrame):
         dimension_layout.addWidget(self.height_label)
         dimension_layout.addWidget(self.height_spinbox)
 
-        main_layout.addLayout(dimension_layout)
+        # Add spacing and the "Insert Main Entrance" button
+        dimension_layout.addSpacing(10)
+        door_button_layout = QHBoxLayout()  # Create a horizontal layout to center the button
+        self.insert_door_button = ShapeButton(self, "door")  # Use ShapeButton for the door
+        self.insert_door_button.setToolTip(self.language.get("tooltip_insert_main_entrance"))  # Add tooltip
+        self.insert_door_button.setFixedSize(50, 50)
+        self.insert_door_button.clicked.connect(self.toggle_menu)  # Connect to toggle menu
+        door_button_layout.addStretch()  # Add stretch before the button
+        door_button_layout.addWidget(self.insert_door_button)
+        door_button_layout.addStretch()  # Add stretch after the button
+        dimension_layout.addLayout(door_button_layout)  # Add the horizontal layout to the vertical layout
+        dimension_layout.addSpacing(10)
+
+        main_layout.addLayout(dimension_layout)  # Add dimension_layout to main_layout
 
         # Add HSV sliders and labels
         hsv_layout = QVBoxLayout()
@@ -293,6 +309,195 @@ class ToolPaletteFrame(QFrame):
                 if widget:
                     widget.deleteLater()
 
+    def toggle_menu(self):
+        """Toggle the visibility of the menu to the right of the door button."""
+        if self.menu_widget and self.menu_widget.isVisible():
+            # Nascondi il menu e rimuovi la superficie
+            print("Hiding menu")
+            self.menu_widget.hide()
+            if self.parent_frame:
+                self.parent_frame.remove_translucent_wall()  # Rimuove la superficie traslucida
+        else:
+            if not self.menu_widget:
+                self.create_menu()
+            self.menu_widget.move(self.insert_door_button.mapToGlobal(QPoint(self.insert_door_button.width() + 10, 0)))
+            self.menu_widget.show()
+            # Crea la superficie iniziale
+            if self.parent_frame:
+                self.parent_frame.create_initial_translucent_wall()
+
+    def create_menu(self):
+        """Create the menu with left arrow, right arrow, and confirmation buttons."""
+        self.menu_widget = QWidget(self)
+        self.menu_widget.setWindowFlags(Qt.WindowType.Popup)
+        self.menu_widget.setObjectName("menuWidget")  # Assign an object name for QSS styling
+
+        menu_layout = QVBoxLayout(self.menu_widget)
+        menu_layout.setContentsMargins(10, 10, 10, 10)
+        menu_layout.setSpacing(10)
+
+        # Create the horizontal layout for the arrow and confirmation buttons
+        button_layout = QHBoxLayout()
+
+        # Left arrow button
+        self.left_arrow_button = QPushButton("←", self.menu_widget)
+        self.left_arrow_button.setObjectName("leftArrowButton")
+        self.left_arrow_button.setFixedSize(30, 30)
+        button_layout.addWidget(self.left_arrow_button)
+
+        # Confirmation button
+        self.confirm_button = ShapeButton(self.menu_widget, "hammer")
+        self.confirm_button.setObjectName("confirmButton")
+        self.confirm_button.setToolTip(self.language.get("tooltip_confirm_selection"))  # Add tooltip
+        self.confirm_button.setFixedSize(60, 80)
+        button_layout.addWidget(self.confirm_button)
+
+        # Right arrow button
+        self.right_arrow_button = QPushButton("→", self.menu_widget)
+        self.right_arrow_button.setObjectName("rightArrowButton")
+        self.right_arrow_button.setFixedSize(30, 30)
+        button_layout.addWidget(self.right_arrow_button)
+
+        menu_layout.addLayout(button_layout)
+
+        # Reduce or remove the vertical spacing below the button layout
+        menu_layout.addSpacing(5)  # Reduced from 20 to 5, or remove this line entirely
+
+        # Collegare le frecce alla logica di selezione delle pareti
+        self.left_arrow_button.clicked.connect(self.parent_frame.select_previous_wall)
+        self.left_arrow_button.clicked.connect(self.validate_door_dimensions)  # Now a class method
+        self.right_arrow_button.clicked.connect(self.parent_frame.select_next_wall)
+        self.right_arrow_button.clicked.connect(self.validate_door_dimensions)
+
+        # Hide the menu initially
+        self.menu_widget.hide()
+        self.menu_widget.hideEvent = self.on_menu_hide
+
+        # Add controls for door dimensions and position
+        self.door_controls_widget = QWidget(self.menu_widget)
+        self.door_controls_widget.setVisible(True)  # Initially hidden
+        door_controls_layout = QVBoxLayout(self.door_controls_widget)
+        door_controls_layout.setContentsMargins(10, 10, 10, 10)
+        door_controls_layout.setSpacing(10)
+
+        # Height control
+        height_label = QLabel(self.language.get("label_door_height"), self.door_controls_widget)
+        height_spinbox = QDoubleSpinBox(self.door_controls_widget)
+        height_spinbox.setRange(0.1, 10.0)
+        height_spinbox.setSingleStep(0.1)
+        height_spinbox.setSuffix(" m")
+        height_spinbox.setValue(2.0)
+        door_controls_layout.addWidget(height_label)
+        door_controls_layout.addWidget(height_spinbox)
+
+        # Width control
+        width_label = QLabel(self.language.get("label_door_width"), self.door_controls_widget)
+        width_spinbox = QDoubleSpinBox(self.door_controls_widget)
+        width_spinbox.setRange(0.1, 10.0)
+        width_spinbox.setSingleStep(0.1)
+        width_spinbox.setSuffix(" m")
+        width_spinbox.setValue(1.0)
+        door_controls_layout.addWidget(width_label)
+        door_controls_layout.addWidget(width_spinbox)
+
+        # Position control
+        offset_label = QLabel(self.language.get("label_door_offset"), self.door_controls_widget)
+        offset_spinbox = QDoubleSpinBox(self.door_controls_widget)
+        offset_spinbox.setRange(0.0, 100.0)  # Assuming wall length in meters
+        offset_spinbox.setSingleStep(0.1)
+        offset_spinbox.setSuffix(" m")
+        offset_spinbox.setValue(0.0)
+        door_controls_layout.addWidget(offset_label)
+        door_controls_layout.addWidget(offset_spinbox)
+
+        # Add validation logic for door dimensions and offset
+        width_spinbox.valueChanged.connect(self.validate_door_dimensions)
+        offset_spinbox.valueChanged.connect(self.validate_door_dimensions)
+
+        # Add logic to handle door creation validation
+        def handle_door_creation():
+            total_door_width = width_spinbox.value() + offset_spinbox.value()
+            if self.parent_frame and hasattr(self.parent_frame, "get_current_wall_length"):
+                wall_length = self.parent_frame.get_current_wall_length()
+                if total_door_width > wall_length or height_spinbox.value() > self.height_spinbox.value():
+                    QMessageBox.warning(
+                        self,
+                        self.language.get("error_title"),
+                        self.language.get("error_door_exceeds_wall")
+                    )
+                    return
+
+                reply = QMessageBox.question(
+                    self,
+                    self.language.get("confirm_new_door_title"),
+                    self.language.get("confirm_new_door_message"),
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                )
+
+                if reply == QMessageBox.StandardButton.Yes:
+                    # Rimuove la porta esistente e crea una nuova
+                    if self.parent_frame and hasattr(self.parent_frame, "remove_door_surface"):
+                        self.parent_frame.remove_door_surface()
+
+                    # Crea la porta e salvala nel view
+                    new_door = self.parent_frame.create_door_surface(
+                        width=width_spinbox.value(),
+                        height=height_spinbox.value(),
+                        offset=offset_spinbox.value()
+                    )
+                    # Debug: Verifica il valore restituito da create_door_surface
+                    # print(f"create_door_surface returned: {new_door}")
+
+                    # Salva la porta nel view per mantenerla
+                    if hasattr(self.parent_frame, "view"):
+                        self.parent_frame.view.door_mesh = new_door
+                        # print(f"Door mesh saved: {new_door}")
+
+        # Connect the toggle button to the door creation logic
+        self.confirm_button.clicked.connect(handle_door_creation)
+
+        menu_layout.addWidget(self.door_controls_widget)
+
+        # Add logic to handle room dimension changes
+        def handle_room_dimension_change():
+
+            self.parent_frame.view.door_mesh = None
+
+            # Aggiorna le dimensioni della stanza
+            self.parent_frame.update_room_plot(
+                width=self.width_spinbox.value(),
+                length=self.length_spinbox.value(),
+                height=self.height_spinbox.value(),
+                hue=self.hue_slider.value(),
+                saturation=self.saturation_slider.value(),
+                value=self.value_slider.value()
+            )
+
+        # Connetti le spinbox al gestore delle modifiche
+        self.width_spinbox.valueChanged.connect(handle_room_dimension_change)
+        self.length_spinbox.valueChanged.connect(handle_room_dimension_change)
+        self.height_spinbox.valueChanged.connect(handle_room_dimension_change)
+
+    def on_menu_hide(self, event):
+        """Handle the menu hide event to remove the translucent surface and hide door controls."""
+        if self.parent_frame:
+            self.parent_frame.remove_translucent_wall()
+        self.door_controls_widget.setVisible(True)
+        event.accept()
+
+    def validate_door_dimensions(self):
+        """Validate the door dimensions and adjust if necessary."""
+        # if self.door_controls_widget:
+        #     width_spinbox = self.door_controls_widget.findChild(QDoubleSpinBox, "widthSpinBox")
+        #     offset_spinbox = self.door_controls_widget.findChild(QDoubleSpinBox, "offsetSpinBox")
+        #     if width_spinbox and offset_spinbox:
+        #         total_door_width = width_spinbox.value() + offset_spinbox.value()
+        #         if self.parent_frame and hasattr(self.parent_frame, "get_current_wall_length"):
+        #             wall_length = self.parent_frame.get_current_wall_length()
+        #             if total_door_width > wall_length:
+        #                 width_spinbox.setValue(max(0.1, wall_length - offset_spinbox.value()))
+        #                 offset_spinbox.setValue(max(0.0, wall_length - width_spinbox.value()))
+
 class ClickableImageLabel(QLabel):
     def __init__(self, image_path, parent=None):
         super().__init__(parent)
@@ -310,6 +515,7 @@ class ShapeButton(QPushButton):
         self.shape = shape
         self.setFixedSize(QSize(50, 50))
         self.selected = False
+
     def setSelected(self, selected: bool):
         self.selected = selected
         self.update()
@@ -354,3 +560,56 @@ class ShapeButton(QPushButton):
                 painter.setBrush(Qt.BrushStyle.NoBrush)
 
             painter.drawRect(10, 10, 30, 30)
+
+        elif self.shape == "door":
+            pen = painter.pen()
+            pen.setColor(QColor("#FFA500"))  # Orange
+            pen.setWidth(1)
+            painter.setPen(pen)
+
+            # Fill the door with semi-transparent orange
+            painter.setBrush(QColor(255, 165, 0, 50))  # Semi-transparent orange when unselected
+
+            # Draw a filled rectangle representing the door
+            painter.drawRect(15, 10, 20, 30)  # Door rectangle
+
+            # Draw the door knob (or handle)
+            painter.setBrush(QColor(255, 165, 0, 255))  # Solid orange for the knob
+            painter.drawEllipse(28, 25, 4, 4)  # Adjusted position and size for the knob
+        elif self.shape == "hammer":
+            pen = painter.pen()
+            pen.setColor(QColor("#FFA500"))  # Orange
+            pen.setWidth(1)
+            painter.setPen(pen)
+
+            painter.setBrush(QColor(255, 165, 0, 50))  # Semi-transparent orange
+
+            # Diagonal transformation: rotate painter a bit clockwise around center
+            painter.save()
+            center = self.rect().center()
+            painter.translate(center)
+            painter.rotate(20)  # Rotate 20 degrees clockwise
+            painter.translate(-center)
+
+            # Hammer handle (vertical rectangle, now diagonal)
+            handle_rect = QRect(26, 30, 8, 30)
+            painter.drawRect(handle_rect)
+
+            # Draw the hammer outline
+            pen.setColor(QColor("#FF8C00"))  # Darker orange for outline
+            pen.setWidth(2)
+            painter.setPen(pen)
+            painter.drawRect(handle_rect)
+
+            # Hammer head (horizontal rectangle, now diagonal)
+            painter.setBrush(QColor(255, 165, 0, 120))
+            head_rect = QRect(18, 20, 24, 10)
+            painter.drawRect(head_rect)
+
+            # Draw the hammer outline
+            pen.setColor(QColor("#FF8C00"))  # Darker orange for outline
+            pen.setWidth(2)
+            painter.setPen(pen)
+            painter.drawRect(head_rect)
+
+            painter.restore()
