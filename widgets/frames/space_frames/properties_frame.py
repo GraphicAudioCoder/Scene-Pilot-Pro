@@ -155,7 +155,7 @@ class PropertiesFrame(QFrame):
 
         # Add the delete button below the OpenGL view
         delete_button = QPushButton(self.language.get("button_delete"))
-        delete_button.setObjectName("delete_space_button")
+        delete_button.setObjectName("delete_space_button")  # Updated object name for QSS styling
         delete_button.setToolTip(self.language.get("dialog_delete_message"))
         delete_button.clicked.connect(lambda: self.confirm_and_delete_space(space_data))
         space_layout.addWidget(delete_button)

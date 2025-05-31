@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QFrame, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QDoubleSpinBox, QSlider, QListWidget, QListWidgetItem, QFileDialog, QLabel, QScrollArea, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDialog, QMessageBox
+from PyQt6.QtWidgets import QFrame, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QDoubleSpinBox, QSlider, QListWidget, QListWidgetItem, QFileDialog, QLabel, QScrollArea, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QDialog, QMessageBox, QMenu
 from PyQt6.QtGui import QPainter, QPaintEvent, QColor, QFont, QPixmap, QIcon, QGuiApplication, QBrush, QPolygon
 from PyQt6.QtCore import QSize, pyqtSignal, Qt, QPoint, QRect
 import os
@@ -227,33 +227,16 @@ class ToolPaletteFrame(QFrame):
             self.display_image(saved_image_path)
 
     def display_image(self, image_path):
-        """Display a saved image in the gallery with a remove button."""
+        """Display a saved image in the gallery."""
         image_item_widget = QWidget()
-        image_item_layout = QHBoxLayout(image_item_widget)
+        image_item_layout = QVBoxLayout(image_item_widget)  # Use vertical layout for full width
         image_item_layout.setContentsMargins(0, 0, 0, 0)
 
         # Image preview
-        pixmap = QPixmap(image_path).scaled(125, 125, Qt.AspectRatioMode.KeepAspectRatio)
+        pixmap = QPixmap(image_path).scaled(self.image_gallery_scroll_area.width(), 125, Qt.AspectRatioMode.KeepAspectRatio)
         image_label = ClickableImageLabel(image_path, self)
         image_label.setPixmap(pixmap)
         image_item_layout.addWidget(image_label)
-
-        # Remove button
-        remove_button = QPushButton("X")
-        remove_button.setFixedSize(20, 20)  # Smaller size
-        remove_button.setStyleSheet("""
-            QPushButton {
-                color: #AA0000; /* Dark red */
-                font-weight: bold;
-                border: none;
-                background: transparent;
-            }
-            QPushButton:hover {
-                color: #FF0000; /* Brighter red on hover */
-            }
-        """)
-        remove_button.clicked.connect(lambda: self.remove_image(image_item_widget, image_path))
-        image_item_layout.addWidget(remove_button)
 
         self.image_gallery_layout.addWidget(image_item_widget)
 
@@ -505,9 +488,21 @@ class ClickableImageLabel(QLabel):
         self.parent_frame = parent
         self.setToolTip(self.parent_frame.language.get("tooltip_open_image"))  # Add tooltip
 
-    def mousePressEvent(self, ev):
-        if self.parent_frame is not None and hasattr(self.parent_frame, "show_image_preview"):
+    def contextMenuEvent(self, event):
+        """Show a context menu for the image."""
+        menu = QMenu(self)
+        open_action = menu.addAction(self.parent_frame.language.get("context_menu_open_image"))
+        delete_action = menu.addAction(self.parent_frame.language.get("context_menu_delete_image"))
+
+        action = menu.exec(event.globalPos())
+        if action == open_action:
             self.parent_frame.show_image_preview(self.image_path)
+        elif action == delete_action:
+            self.parent_frame.remove_image(self, self.image_path)
+
+    def mousePressEvent(self, ev):
+        """Override to disable direct opening on left click."""
+        pass
 
 class ShapeButton(QPushButton):
     def __init__(self, parent, shape):

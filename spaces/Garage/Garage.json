@@ -2,9 +2,9 @@
     "name": "Garage",
     "description": "",
     "coordinates": {
-        "width": 3.0,
-        "length": 3.0,
-        "height": 2.0
+        "width": 4.0,
+        "length": 5.0,
+        "height": 3.0
     },
     "color": {
         "hue": 202,
@@ -12,8 +12,8 @@
         "value": 100
     },
     "door": {
-        "width": 2.0,
-        "height": 1.5,
+        "width": 3.0,
+        "height": 2.5,
         "offset": 0.5,
         "wall_index": 0
     }

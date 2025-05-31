@@ -364,3 +364,21 @@ QPushButton#leftArrowButton:hover, QPushButton#rightArrowButton:hover {
 QPushButton#leftArrowButton:pressed, QPushButton#rightArrowButton:pressed {
     background-color: #006666; /* Darker cyan on press */
 }
+
+QPushButton#delete_space_button {
+    background-color: #8B0000; /* Dark red */
+    color: #f0f0f0; /* Off-white text */
+    border: 1px solid #B22222; /* Firebrick red border */
+    border-radius: 6px;
+    padding: 6px;
+    font-family: "Poppins";
+    font-size: 14px;
+}
+
+QPushButton#delete_space_button:hover {
+    background-color: #B22222; /* Firebrick red */
+}
+
+QPushButton#delete_space_button:pressed {
+    background-color: #660000; /* Darker red */
+}

@@ -67,5 +67,7 @@
     "label_door_offset": "Door Offset (from left):",
     "confirm_new_door_title": "Confirm New Door",
     "confirm_new_door_message": "Are you sure you want to create a new door? This will remove any previously inserted main entrance.",
-    "warning_door_removed": "The main entrance has been removed."
+    "warning_door_removed": "The main entrance has been removed.",
+    "context_menu_open_image": "Open Image",
+    "context_menu_delete_image": "Delete Image"
 }
