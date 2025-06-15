@@ -228,6 +228,12 @@ class PropertiesFrame(QFrame):
                 render_door=True
             )
 
+        # Lock dimensions in the tool palette when loading a model
+        self.tool_palette.lock_dimensions()
+        self.tool_palette.width_spinbox.setEnabled(False)
+        self.tool_palette.length_spinbox.setEnabled(False)
+        self.tool_palette.height_spinbox.setEnabled(False)
+
     def confirm_and_delete_space(self, space_data):
         """Show a confirmation dialog before deleting the space."""
         reply = QMessageBox.question(

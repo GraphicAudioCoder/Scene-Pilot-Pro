@@ -18,6 +18,9 @@ class ToolPaletteFrame(QFrame):
         # Initialize the toggle menu
         self.menu_widget = None
 
+        # Lock state variable
+        self.is_locked = False  # Track lock state
+
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
@@ -136,13 +139,7 @@ class ToolPaletteFrame(QFrame):
         self.add_image_button = QPushButton(self.language.get("button_add_image"))
         self.add_image_button.clicked.connect(self.add_image)
         self.add_image_button.setEnabled(False)  # Disable the button initially
-        self.add_image_button.setStyleSheet("""
-            QPushButton:disabled {
-                background-color: #243447; /* Slightly lighter blue for disabled state */
-                color: #666666; /* Gray text for disabled state */
-                border: 1px solid #415a77; /* Keep the border consistent */
-            }
-        """)
+        self.add_image_button.setObjectName("addImageButton")
 
         gallery_layout = QVBoxLayout()
         gallery_layout.addWidget(self.image_gallery_label)
@@ -436,6 +433,12 @@ class ToolPaletteFrame(QFrame):
                         self.parent_frame.view.door_mesh = new_door
                         # print(f"Door mesh saved: {new_door}")
 
+            # Lock dimensions after successful door creation
+            self.lock_dimensions()
+            self.width_spinbox.setEnabled(False)
+            self.length_spinbox.setEnabled(False)
+            self.height_spinbox.setEnabled(False)
+
         # Connect the toggle button to the door creation logic
         self.confirm_button.clicked.connect(handle_door_creation)
 
@@ -480,6 +483,70 @@ class ToolPaletteFrame(QFrame):
         #             if total_door_width > wall_length:
         #                 width_spinbox.setValue(max(0.1, wall_length - offset_spinbox.value()))
         #                 offset_spinbox.setValue(max(0.0, wall_length - width_spinbox.value()))
+
+    def contextMenuEvent(self, event):
+        """Show a context menu for locking/unlocking dimensions."""
+        menu = QMenu(self)
+        if self.is_locked:
+            action = menu.addAction(self.language.get("context_menu_unlock_dimensions"))
+        else:
+            action = menu.addAction(self.language.get("context_menu_lock_dimensions"))
+
+        selected_action = menu.exec(event.globalPos())
+        if selected_action == action:
+            self.toggle_lock_dimensions()
+
+    def toggle_lock_dimensions(self):
+        """Toggle the lock state for dimension controls and update their appearance."""
+        self.is_locked = not self.is_locked
+        self.width_spinbox.setEnabled(not self.is_locked)
+        self.length_spinbox.setEnabled(not self.is_locked)
+        self.height_spinbox.setEnabled(not self.is_locked)
+
+        # Update styles to indicate lock state
+        if self.is_locked:
+            self.width_spinbox.setProperty("locked", True)
+            self.length_spinbox.setProperty("locked", True)
+            self.height_spinbox.setProperty("locked", True)
+        else:
+            self.width_spinbox.setProperty("locked", False)
+            self.length_spinbox.setProperty("locked", False)
+            self.height_spinbox.setProperty("locked", False)
+
+        self.width_spinbox.style().unpolish(self.width_spinbox)
+        self.width_spinbox.style().polish(self.width_spinbox)
+        self.length_spinbox.style().unpolish(self.length_spinbox)
+        self.length_spinbox.style().polish(self.length_spinbox)
+        self.height_spinbox.style().unpolish(self.height_spinbox)
+        self.height_spinbox.style().polish(self.height_spinbox)
+
+    def lock_dimensions(self):
+        """Lock the dimension spinboxes and update their styles."""
+        self.is_locked = True
+        self.width_spinbox.setProperty("locked", True)
+        self.length_spinbox.setProperty("locked", True)
+        self.height_spinbox.setProperty("locked", True)
+
+        self.width_spinbox.style().unpolish(self.width_spinbox)
+        self.width_spinbox.style().polish(self.width_spinbox)
+        self.length_spinbox.style().unpolish(self.length_spinbox)
+        self.length_spinbox.style().polish(self.length_spinbox)
+        self.height_spinbox.style().unpolish(self.height_spinbox)
+        self.height_spinbox.style().polish(self.height_spinbox)
+
+    def unlock_dimensions(self):
+        """Unlock the dimension spinboxes and update their styles."""
+        self.is_locked = False
+        self.width_spinbox.setProperty("locked", False)
+        self.length_spinbox.setProperty("locked", False)
+        self.height_spinbox.setProperty("locked", False)
+
+        self.width_spinbox.style().unpolish(self.width_spinbox)
+        self.width_spinbox.style().polish(self.width_spinbox)
+        self.length_spinbox.style().unpolish(self.length_spinbox)
+        self.length_spinbox.style().polish(self.length_spinbox)
+        self.height_spinbox.style().unpolish(self.height_spinbox)
+        self.height_spinbox.style().polish(self.height_spinbox)
 
 class ClickableImageLabel(QLabel):
     def __init__(self, image_path, parent=None):

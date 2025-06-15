@@ -69,5 +69,7 @@
     "confirm_new_door_message": "Are you sure you want to create a new door? This will remove any previously inserted main entrance.",
     "warning_door_removed": "The main entrance has been removed.",
     "context_menu_open_image": "Open Image",
-    "context_menu_delete_image": "Delete Image"
+    "context_menu_delete_image": "Delete Image",
+    "context_menu_lock_dimensions": "Lock dimensions",
+    "context_menu_unlock_dimensions": "Unlock dimensions"
 }

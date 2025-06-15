@@ -140,6 +140,17 @@ QDoubleSpinBox::down-arrow {
     image: none; /* Use default system arrow if no custom icon is provided */
 }
 
+/* Style for locked spinboxes */
+QDoubleSpinBox[locked="true"] {
+    background-color: #8B0000; /* Rosso scuro */
+    color: #FFFFFF; /* Testo bianco */
+}
+
+QDoubleSpinBox[locked="false"] {
+    background-color: #243447; /* Default background */
+    color: #F0F0F0; /* Default text color */
+}
+
 QSlider {
     background-color: #121e2b; /* Blu medio molto desaturato */
     border: 1px solid #2a3c50; /* Bordo blu chiaro molto desaturato */
@@ -381,4 +392,10 @@ QPushButton#delete_space_button:hover {
 
 QPushButton#delete_space_button:pressed {
     background-color: #660000; /* Darker red */
+}
+
+#addImageButton:disabled {
+    background-color: #243447; /* Slightly lighter blue for disabled state */
+    color: #666666; /* Gray text for disabled state */
+    border: 1px solid #415a77; /* Keep the border consistent */
 }

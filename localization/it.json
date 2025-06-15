@@ -69,5 +69,7 @@
     "confirm_new_door_message": "Sei sicuro di voler creare una nuova porta? Questa rimuoverà qualsiasi ingresso principale precedentemente inserito.",
     "warning_door_removed": "L'ingresso principale è stato rimosso.",
     "context_menu_open_image": "Apri immagine",
-    "context_menu_delete_image": "Elimina immagine"
+    "context_menu_delete_image": "Elimina immagine",
+    "context_menu_lock_dimensions": "Blocca dimensioni",
+    "context_menu_unlock_dimensions": "Sblocca dimensioni"
 }
